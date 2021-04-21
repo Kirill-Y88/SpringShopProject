@@ -1,8 +1,14 @@
 package ru.geekbrains.springshop.models;
 
 
-import javax.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "promo")
 public class Promo {
@@ -12,39 +18,10 @@ public class Promo {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product productID;
-
     @Column(name = "promo")
     private Long promo;
 
+    @OneToMany(mappedBy = "promoID")
+    private List<Product> productID;
 
-    public Promo() {
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Product getProductID() {
-        return productID;
-    }
-
-    public void setProductID(Product productID) {
-        this.productID = productID;
-    }
-
-    public Long getPromo() {
-        return promo;
-    }
-
-    public void setPromo(Long promo) {
-        this.promo = promo;
-    }
 }

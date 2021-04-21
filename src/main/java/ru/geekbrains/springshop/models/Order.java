@@ -1,9 +1,14 @@
 package ru.geekbrains.springshop.models;
 
 
-import javax.persistence.*;
-import java.util.List;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -13,51 +18,22 @@ public class Order {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "product_item_id")
-    private ProductItem productItemID;
-
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userID;
+    private User user;
 
-    @OneToMany
-    @JoinColumn(name = "orderID")
+    @OneToMany(mappedBy = "orderID")
+    private List<ProductItem> productItems;
+
+    @Column(name = "price")
+    private Long price;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @OneToMany(mappedBy = "orderID")
     private List<OrderStatus> orderStatus;
 
 
-    public Order() {
-    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ProductItem getProductItemID() {
-        return productItemID;
-    }
-
-    public void setProductItemID(ProductItem productItemID) {
-        this.productItemID = productItemID;
-    }
-
-    public User getUserID() {
-        return userID;
-    }
-
-    public void setUserID(User userID) {
-        this.userID = userID;
-    }
-
-    public List<OrderStatus> getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(List<OrderStatus> orderStatus) {
-        this.orderStatus = orderStatus;
-    }
 }

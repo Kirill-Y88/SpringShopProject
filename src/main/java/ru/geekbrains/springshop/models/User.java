@@ -1,9 +1,14 @@
 package ru.geekbrains.springshop.models;
 
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -13,60 +18,22 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "login")
+    private String login;
+
+    @Column(name = "password")
+    private String password;
+
+    @OneToOne
+    @JoinColumn(name = "cash_id")
+    private Cashback cashID;
+
+    @OneToOne
+    @JoinColumn(name = "role_id")
+    private Role roleID;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
 
 
-    public User() {
-    }
-
-    @OneToOne(mappedBy = "userID")
-    private Comment comment;
-
-    @OneToOne(mappedBy = "userID")
-    private Cashback cashback;
-
-    @OneToOne(mappedBy = "userID")
-    private Order order;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Comment getComment() {
-        return comment;
-    }
-
-    public void setComment(Comment comment) {
-        this.comment = comment;
-    }
-
-    public Cashback getCashback() {
-        return cashback;
-    }
-
-    public void setCashback(Cashback cashback) {
-        this.cashback = cashback;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 }

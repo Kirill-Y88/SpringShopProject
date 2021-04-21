@@ -1,27 +1,44 @@
-DROP TABLE IF EXISTS users CASCADE;
-CREATE TABLE users (id bigserial PRIMARY KEY, name VARCHAR (255));
-INSERT INTO users (name) VALUES
-('ivan'),
-('Petr'),
-('Alexander'),
-('Donald');
-
 DROP TABLE IF EXISTS cashback CASCADE;
-CREATE TABLE cashback (id bigserial PRIMARY KEY, user_id bigint, cash bigint, FOREIGN KEY (user_id) REFERENCES users (id));
-INSERT INTO cashback (user_id, cash) VALUES
-(1, 15),
-(2, 52),
-(3, 40),
-(4, 35);
+CREATE TABLE cashback (id bigserial PRIMARY KEY, cash bigint);
+INSERT INTO cashback (cash) VALUES
+(15),
+(52),
+(40),
+(35);
+
+DROP TABLE IF EXISTS roles CASCADE;
+CREATE TABLE roles (id bigserial PRIMARY KEY, user_role VARCHAR (255));
+INSERT INTO roles (user_role) VALUES
+('user'),
+('admin'),
+('moderator');
+
+DROP TABLE IF EXISTS users CASCADE;
+CREATE TABLE users (id bigserial PRIMARY KEY, login VARCHAR (255), password VARCHAR (255), cash_id bigint, role_id bigint,
+FOREIGN KEY (cash_id ) REFERENCES cashback (id), FOREIGN KEY (role_id) REFERENCES roles (id));
+INSERT INTO users (login,password,cash_id,role_id) VALUES
+('Ivan', 'i1', 1, 1),
+('Petr', 'p1', 2, 1),
+('Alexander', 'a1', 3, 2),
+('Donald', 'd1', 4, 3);
+
+DROP TABLE IF EXISTS promo CASCADE;
+CREATE TABLE promo (id bigserial PRIMARY KEY, promo bigint);
+INSERT INTO promo (promo) VALUES
+(5),
+(10),
+(15),
+(45);
 
 DROP TABLE IF EXISTS products CASCADE;
-CREATE TABLE products (id bigserial PRIMARY KEY, name VARCHAR (255), cost bigint);
-INSERT INTO products (name, cost) VALUES
-('Apple', 15),
-('Book', 52),
-('Dress', 40),
-('Pen', 35),
-('Knife', 75);
+CREATE TABLE products (id bigserial PRIMARY KEY, name VARCHAR (255), price bigint, promo_id bigint,
+ FOREIGN KEY (promo_id) REFERENCES promo (id));
+INSERT INTO products (name, price, promo_id) VALUES
+('Apple', 15, 1),
+('Book', 52, 2),
+('Dress', 40, 3),
+('Pen', 35, 4),
+('Knife', 75, 1);
 
 DROP TABLE IF EXISTS categories CASCADE;
 CREATE TABLE categories (id bigserial PRIMARY KEY, name VARCHAR (255));
@@ -30,14 +47,6 @@ INSERT INTO categories (name) VALUES
 ('Writing goods'),
 ('Clothes'),
 ('Home');
-
-DROP TABLE IF EXISTS promo CASCADE;
-CREATE TABLE promo (id bigserial PRIMARY KEY, product_id bigint, promo bigint, FOREIGN KEY (product_id) REFERENCES products (id));
-INSERT INTO promo (product_id, promo) VALUES
-(1, 5),
-(2, 5),
-(3, 15),
-(4, 45);
 
 DROP TABLE IF EXISTS comments CASCADE;
 CREATE TABLE comments (id bigserial PRIMARY KEY, product_id bigint, user_id bigint, comment VARCHAR (255), FOREIGN KEY (product_id) REFERENCES products (id),
@@ -58,44 +67,46 @@ INSERT INTO product_category (product_id, category_id) VALUES
 (4, 2),
 (5, 4);
 
+DROP TABLE IF EXISTS orders CASCADE;
+CREATE TABLE orders (id bigserial PRIMARY KEY, user_id bigint, price bigint, create_date timestamp default current_timestamp,
+                     FOREIGN KEY (user_id) REFERENCES users (id));
+INSERT INTO orders (user_id) VALUES
+(1),
+(2),
+(3),
+(4),
+(1);
+
+DROP TABLE IF EXISTS order_status CASCADE;
+CREATE TABLE order_status(id bigserial PRIMARY KEY, order_id bigint, order_status VARCHAR (255), create_date timestamp default current_timestamp,
+                          FOREIGN KEY (order_id) REFERENCES orders (id));
+INSERT INTO order_status (order_id, order_status) VALUES
+(1, 'In the cart'),
+(2, 'Paid'),
+(3, 'Delivered'),
+(4, 'Returned'),
+(5, 'Paid');
+
 DROP TABLE IF EXISTS product_items CASCADE;
-CREATE TABLE product_items (id bigserial PRIMARY KEY, product_id bigint, serial_number bigint, FOREIGN KEY (product_id) REFERENCES products (id));
-INSERT INTO product_items (product_id, serial_number) VALUES
-(1, 5988),
-(2, 99347),
-(3, 64134),
-(4, 794453),
-(5, 157651);
+CREATE TABLE product_items (id bigserial PRIMARY KEY, product_id bigint, order_id bigint, price bigint,
+ FOREIGN KEY (product_id) REFERENCES products (id),FOREIGN KEY (order_id) REFERENCES orders (id) );
+INSERT INTO product_items (product_id, order_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
 
 DROP TABLE IF EXISTS storage CASCADE;
-CREATE TABLE storage (id bigserial PRIMARY KEY, product_item_id bigint, amount bigint, FOREIGN KEY (product_item_id) REFERENCES product_items (id));
-INSERT INTO storage (product_item_id, amount) VALUES
+CREATE TABLE storage (id bigserial PRIMARY KEY, product_id bigint, amount bigint, FOREIGN KEY (product_id) REFERENCES products (id));
+INSERT INTO storage (product_id, amount) VALUES
 (1, 29),
 (2, 45),
 (3, 1),
 (4, 108),
 (5, 3);
 
-DROP TABLE IF EXISTS orders CASCADE;
-CREATE TABLE orders (id bigserial PRIMARY KEY, product_item_id bigint, user_id bigint,
-                                FOREIGN KEY (product_item_id) REFERENCES product_items (id),
-                               FOREIGN KEY (user_id) REFERENCES users (id));
-INSERT INTO orders (product_item_id, user_id) VALUES
-(1, 1),
-(2, 1),
-(3, 3),
-(4, 4),
-(5, 4);
 
-DROP TABLE IF EXISTS order_status CASCADE;
-CREATE TABLE order_status(id bigserial PRIMARY KEY, order_id bigint, order_status VARCHAR (255), data VARCHAR (255), order_number VARCHAR(255) ,
-                          FOREIGN KEY (order_id) REFERENCES orders (id));
-INSERT INTO order_status (order_id, order_status, data) VALUES
-(1, 'In the cart', '-'),
-(2, 'Paid', '22-03-2021'),
-(3, 'Delivered', '25-03-2021'),
-(4, 'Returned', '26-03-2021'),
-(5, 'Paid', '04-04-2021');
 
 
 

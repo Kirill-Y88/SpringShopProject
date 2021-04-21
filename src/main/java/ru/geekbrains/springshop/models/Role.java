@@ -1,27 +1,23 @@
 package ru.geekbrains.springshop.models;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+@Entity
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
-@Entity
-@Table(name = "cashback")
-public class Cashback {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private Integer id;
 
-    @Column(name = "cash")
-    private Long cash;
+    @Column(name = "user_role")
+    private String userRole;
 
-    @OneToOne(mappedBy = "cashID")
+    @OneToOne(mappedBy = "roleID")
     private User user;
-
-
-
 }

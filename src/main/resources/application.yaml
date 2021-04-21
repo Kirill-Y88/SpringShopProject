@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=spring_shopv1
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=spring_shopv2
     username: postgres
     password: 12345
   jpa:

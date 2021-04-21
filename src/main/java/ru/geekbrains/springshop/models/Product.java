@@ -1,9 +1,14 @@
 package ru.geekbrains.springshop.models;
 
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
@@ -16,17 +21,15 @@ public class Product {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "cost")
-    private Long cost;
+    @Column(name = "price")
+    private Long price;
 
-    public Product() {
-    }
-
-    @OneToOne(mappedBy = "productID")
-    private Comment comment;
+    @ManyToOne
+    @JoinColumn(name = "promo_id")
+    private Promo promoID;
 
     @OneToMany(mappedBy = "productID")
-    private List<Promo> promos;
+    private List<Comment> comment;
 
     @ManyToMany
     @JoinTable(
@@ -39,60 +42,9 @@ public class Product {
     @OneToMany(mappedBy = "productID")
     private List <ProductItem> productItems;
 
+    @OneToOne(mappedBy = "productID")
+    private Storage storage;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getCost() {
-        return cost;
-    }
-
-    public void setCost(Long cost) {
-        this.cost = cost;
-    }
-
-    public Comment getComment() {
-        return comment;
-    }
-
-    public void setComment(Comment comment) {
-        this.comment = comment;
-    }
-
-    public List<Promo> getPromos() {
-        return promos;
-    }
-
-    public void setPromos(List<Promo> promos) {
-        this.promos = promos;
-    }
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
-    public List<ProductItem> getProductItems() {
-        return productItems;
-    }
-
-    public void setProductItems(List<ProductItem> productItems) {
-        this.productItems = productItems;
-    }
 }

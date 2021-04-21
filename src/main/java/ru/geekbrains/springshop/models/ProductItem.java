@@ -1,9 +1,14 @@
 package ru.geekbrains.springshop.models;
 
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "product_items")
 public class ProductItem {
@@ -17,56 +22,12 @@ public class ProductItem {
     @JoinColumn(name = "product_id")
     private Product productID;
 
-    @Column(name = "serial_number")
-    private Long serialNumber;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order orderID;
 
-    public ProductItem() {
-    }
-
-    @OneToOne(mappedBy = "productItemID")
-    private Storage storage;
-
-    @OneToOne(mappedBy = "productItemID")
-    private Order order;
+    @Column(name = "price")
+    private Long price;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Product getProductID() {
-        return productID;
-    }
-
-    public void setProductID(Product productID) {
-        this.productID = productID;
-    }
-
-    public Long getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(Long serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public Storage getStorage() {
-        return storage;
-    }
-
-    public void setStorage(Storage storage) {
-        this.storage = storage;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 }
